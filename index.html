@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DentalStock · Demo gratuita</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M20 8c-8 0-14 6-14 15 0 6 3 10 5 16 2 7 2 17 7 17 4 0 4-10 9-10s5 10 9 10c5 0 5-10 7-17 2-6 5-10 5-16 0-9-6-15-14-15-5 0-6 3-9 3s-4-3-5-3z' fill='%232bb3c0'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f2f9fb; --card:#ffffff; --ink:#16323a; --muted:#6a8790; --line:#dcebef;
+  --primary:#1fa5b5; --primary-d:#12808e; --mint:#46c9a5; --mint-soft:#e4f7f1;
+  --sky-soft:#e3f4f8; --warn:#f0a63a; --warn-soft:#fff3df; --bad:#e0566b; --bad-soft:#fdeaed;
+  --radius:16px; --shadow:0 6px 24px rgba(31,165,181,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1d22; --card:#142a31; --ink:#e4f3f6; --muted:#8fb0b8; --line:#23424b;
+    --primary:#3cc0d0; --primary-d:#2aa6b6; --mint:#4fd4b0; --mint-soft:#143a33; --sky-soft:#16363f;
+    --warn-soft:#3b2d14; --bad-soft:#3d1c24; --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 48px}
+.demo-bar{background:linear-gradient(90deg,var(--primary),var(--mint));color:#fff;text-align:center;padding:8px 16px;font-size:13px}
+.demo-bar b{font-weight:700}
+header{display:flex;align-items:center;gap:14px;padding:22px 0 8px;flex-wrap:wrap}
+.logo{width:48px;height:48px;border-radius:14px;background:var(--sky-soft);display:grid;place-items:center;flex:none}
+.logo svg{width:30px;height:30px}
+h1{font-size:22px;margin:0;line-height:1.2}
+.sub{color:var(--muted);font-size:13px}
+.spacer{flex:1}
+.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;transition:.15s}
+.btn:hover{background:var(--primary-d)}
+.btn.ghost{background:var(--sky-soft);color:var(--primary-d)}
+.btn.ghost:hover{background:var(--line)}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:9px}
+.btn.lock{background:transparent;border:1.5px dashed var(--line);color:var(--muted)}
+.btn.danger{background:var(--bad-soft);color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.stat{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.stat .n{font-size:28px;font-weight:800;line-height:1.1}
+.stat .l{color:var(--muted);font-size:13px}
+.stat.ok .n{color:var(--mint)} .stat.warn .n{color:var(--warn)} .stat.bad .n{color:var(--bad)} .stat.pri .n{color:var(--primary)}
+.panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);padding:16px;margin-bottom:16px}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;outline:none;min-width:0}
+input:focus,select:focus{border-color:var(--primary)}
+.tools input[type=search]{flex:1;min-width:180px}
+.limit{font-size:13px;color:var(--muted)}
+.limit b{color:var(--primary-d)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.name{font-weight:600}
+.cat{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.pill.ok{background:var(--mint-soft);color:#1b9677}
+.pill.low{background:var(--warn-soft);color:#b87413}
+.pill.out,.pill.exp{background:var(--bad-soft);color:var(--bad)}
+.pill.soon{background:var(--warn-soft);color:#b87413}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;width:90px;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--mint)}
+.bar i.low{background:var(--warn)} .bar i.out{background:var(--bad)}
+.actions{display:flex;gap:6px;justify-content:flex-end}
+h2{font-size:16px;margin:0 0 10px}
+.mov{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.mov:last-child{border:0}
+.mov .t{font-weight:700;width:28px;text-align:center;border-radius:8px;padding:2px 0}
+.mov .t.in{background:var(--mint-soft);color:#1b9677}
+.mov .t.out{background:var(--bad-soft);color:var(--bad)}
+.mov small{color:var(--muted);margin-left:auto;white-space:nowrap}
+.locked{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.empty{color:var(--muted);text-align:center;padding:24px}
+.cta{background:linear-gradient(135deg,var(--sky-soft),var(--mint-soft));border-radius:var(--radius);padding:22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border:1px solid var(--line)}
+.cta h2{margin:0 0 4px}
+.cta p{margin:0;color:var(--muted)}
+dialog{border:0;border-radius:20px;padding:22px;max-width:440px;width:calc(100% - 32px);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(10,40,48,.5)}
+dialog h3{margin:0 0 12px;font-size:18px}
+.f{display:grid;gap:10px}
+.f label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.f .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dlg-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="demo-bar">🦷 <b>Versión demo gratuita</b> · hasta 15 productos y los últimos 10 movimientos. Los datos se guardan solo en este navegador.</div>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 64 64"><path d="M20 8c-8 0-14 6-14 15 0 6 3 10 5 16 2 7 2 17 7 17 4 0 4-10 9-10s5 10 9 10c5 0 5-10 7-17 2-6 5-10 5-16 0-9-6-15-14-15-5 0-6 3-9 3s-4-3-5-3z" transform="translate(6 0)" fill="#2bb3c0"/><path d="M22 20c2-3 6-4 9-3" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" transform="translate(6 0)"/></svg>
+    </div>
+    <div>
+      <h1>DentalStock</h1>
+      <div class="sub">Control de insumos · Tu consultorio</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn ghost" id="btnMov">⇅ Registrar movimiento</button>
+    <button class="btn" id="btnAdd">+ Nuevo insumo</button>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="panel">
+    <div class="tools">
+      <input type="search" id="q" placeholder="Buscar insumo…">
+      <select id="fcat"><option value="">Todas las categorías</option></select>
+      <select id="fst">
+        <option value="">Todos los estados</option>
+        <option value="low">Stock bajo</option>
+        <option value="soon">Por vencer</option>
+        <option value="exp">Vencidos</option>
+      </select>
+      <span class="limit" id="limit"></span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Insumo</th><th>Stock</th><th>Vencimiento</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="two">
+    <section class="panel" style="margin:0">
+      <h2>Últimos movimientos <span class="limit">(demo: 10)</span></h2>
+      <div id="movs"></div>
+    </section>
+    <section class="panel" style="margin:0">
+      <h2>Solo en la versión completa</h2>
+      <div class="locked">
+        <button class="btn lock" data-lock="Exportar a Excel / PDF">🔒 Exportar a Excel / PDF</button>
+        <button class="btn lock" data-lock="Historial completo e ilimitado">🔒 Historial completo</button>
+        <button class="btn lock" data-lock="Productos ilimitados">🔒 Productos ilimitados</button>
+        <button class="btn lock" data-lock="Proveedores y pedidos automáticos">🔒 Proveedores y pedidos</button>
+        <button class="btn lock" data-lock="Aviso por WhatsApp o mail">🔒 Avisos por WhatsApp</button>
+        <button class="btn lock" data-lock="Datos en la nube, desde cualquier dispositivo">🔒 Datos en la nube</button>
+        <button class="btn lock" data-lock="Personalización con tu nombre, logo y colores">🔒 Tu nombre, logo y colores</button>
+        <button class="btn lock" data-lock="Tus propias categorías e insumos">🔒 Tus categorías e insumos</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="cta" style="margin-top:16px">
+    <div style="flex:1;min-width:220px">
+      <h2>¿Te sirve para tu consultorio?</h2>
+      <p>La versión completa se personaliza con el nombre, el logo y los colores de tu consultorio, con tus insumos, sin límites y con tus datos siempre a salvo.</p>
+    </div>
+    <button class="btn" id="btnCta">Quiero la versión completa</button>
+  </section>
+
+  <footer>DentalStock · demo de muestra con datos de ejemplo · la versión completa se personaliza para tu consultorio</footer>
+</div>
+
+<dialog id="dProd">
+  <form method="dialog" class="f" id="fProd">
+    <h3 id="tProd">Nuevo insumo</h3>
+    <label>Nombre<input name="name" required maxlength="60" placeholder="Ej: Guantes de nitrilo M"></label>
+    <div class="row">
+      <label>Categoría<select name="cat" required></select></label>
+      <label>Unidad<input name="unit" required maxlength="14" placeholder="cajas, u, tubos…"></label>
+    </div>
+    <div class="row">
+      <label>Stock actual<input name="stock" type="number" min="0" required></label>
+      <label>Stock mínimo<input name="min" type="number" min="0" required></label>
+    </div>
+    <label>Vencimiento (opcional)<input name="exp" type="date"></label>
+    <div class="dlg-actions">
+      <button class="btn ghost" type="button" data-close>Cancelar</button>
+      <button class="btn" type="submit">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dMov">
+  <form method="dialog" class="f" id="fMov">
+    <h3>Registrar movimiento</h3>
+    <label>Insumo<select name="pid" required></select></label>
+    <div class="row">
+      <label>Tipo<select name="type"><option value="in">Entrada (compra)</option><option value="out">Salida (uso)</option></select></label>
+      <label>Cantidad<input name="qty" type="number" min="1" required></label>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn ghost" type="button" data-close>Cancelar</button>
+      <button class="btn" type="submit">Registrar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dLock">
+  <h3 id="tLock">Versión completa</h3>
+  <p id="pLock" style="color:var(--muted);margin:0">Esta función está disponible en la versión completa de DentalStock.</p>
+  <div class="dlg-actions">
+    <button class="btn ghost" data-close>Cerrar</button>
+    <button class="btn" id="btnLockCta">Quiero la versión completa</button>
+  </div>
+</dialog>
+
+<script>
+const CATS=["Anestesia","Descartables","Restauración","Instrumental rotatorio","Endodoncia","Higiene y desinfección","Radiología","Otros"];
+const LIMIT=15, MOVLIMIT=10;
+const KEY="dentalstock-demo-v1";
+const day=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const seed=()=>({prods:[
+ {id:1,name:"Guantes de nitrilo M",cat:"Descartables",unit:"cajas",stock:8,min:5,exp:day(400)},
+ {id:2,name:"Barbijos quirúrgicos",cat:"Descartables",unit:"cajas",stock:2,min:4,exp:day(300)},
+ {id:3,name:"Anestesia lidocaína 2%",cat:"Anestesia",unit:"tubos",stock:40,min:30,exp:day(18)},
+ {id:4,name:"Anestesia articaína 4%",cat:"Anestesia",unit:"tubos",stock:12,min:25,exp:day(150)},
+ {id:5,name:"Resina compuesta A2",cat:"Restauración",unit:"jeringas",stock:6,min:3,exp:day(210)},
+ {id:6,name:"Resina compuesta A3",cat:"Restauración",unit:"jeringas",stock:1,min:3,exp:day(25)},
+ {id:7,name:"Adhesivo dental",cat:"Restauración",unit:"frascos",stock:3,min:2,exp:day(-12)},
+ {id:8,name:"Fresas de diamante",cat:"Instrumental rotatorio",unit:"u",stock:22,min:10,exp:""},
+ {id:9,name:"Limas endodónticas",cat:"Endodoncia",unit:"sets",stock:5,min:4,exp:day(500)},
+ {id:10,name:"Hipoclorito de sodio",cat:"Endodoncia",unit:"litros",stock:0,min:2,exp:day(90)},
+ {id:11,name:"Desinfectante de superficies",cat:"Higiene y desinfección",unit:"litros",stock:6,min:3,exp:day(380)},
+ {id:12,name:"Radiografías periapicales",cat:"Radiología",unit:"cajas",stock:4,min:2,exp:day(22)}
+],movs:[
+ {t:Date.now()-3600e3*2,pid:3,type:"out",qty:4},
+ {t:Date.now()-3600e3*20,pid:1,type:"in",qty:5},
+ {t:Date.now()-3600e3*28,pid:5,type:"out",qty:1}
+],nid:13});
+
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.prods)S=seed();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function expInfo(p){
+  if(!p.exp)return{k:"none",d:null};
+  const d=Math.ceil((new Date(p.exp+"T00:00:00")-new Date().setHours(0,0,0,0))/864e5);
+  return{k:d<0?"exp":d<=30?"soon":"ok",d};
+}
+function status(p){
+  const e=expInfo(p).k;
+  if(e==="exp")return{c:"exp",l:"Vencido"};
+  if(p.stock===0)return{c:"out",l:"Sin stock"};
+  if(p.stock<=p.min)return{c:"low",l:"Stock bajo"};
+  if(e==="soon")return{c:"soon",l:"Por vencer"};
+  return{c:"ok",l:"Todo en orden"};
+}
+function fmtDate(s){if(!s)return"—";const[y,m,d]=s.split("-");return`${d}/${m}/${y}`}
+function ago(t){const h=Math.round((Date.now()-t)/36e5);return h<1?"hace minutos":h<24?`hace ${h} h`:`hace ${Math.round(h/24)} d`}
+
+function render(){
+  const P=S.prods;
+  const low=P.filter(p=>p.stock<=p.min).length;
+  const soon=P.filter(p=>expInfo(p).k==="soon").length;
+  const exp=P.filter(p=>expInfo(p).k==="exp").length;
+  $("#stats").innerHTML=`
+   <div class="stat pri"><div class="n">${P.length}</div><div class="l">Insumos cargados</div></div>
+   <div class="stat warn"><div class="n">${low}</div><div class="l">Con stock bajo</div></div>
+   <div class="stat warn"><div class="n">${soon}</div><div class="l">Vencen en 30 días</div></div>
+   <div class="stat bad"><div class="n">${exp}</div><div class="l">Vencidos</div></div>`;
+  $("#limit").innerHTML=`Demo: <b>${P.length}/${LIMIT}</b> productos`;
+
+  const q=$("#q").value.trim().toLowerCase(), fc=$("#fcat").value, fs=$("#fst").value;
+  const list=P.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q))return false;
+    if(fc&&p.cat!==fc)return false;
+    if(fs==="low"&&p.stock>p.min)return false;
+    if(fs==="soon"&&expInfo(p).k!=="soon")return false;
+    if(fs==="exp"&&expInfo(p).k!=="exp")return false;
+    return true;
+  });
+  $("#rows").innerHTML=list.length?list.map(p=>{
+    const s=status(p),e=expInfo(p);
+    const pct=Math.min(100,Math.round(p.stock/Math.max(p.min*2,1)*100));
+    const bc=p.stock===0?"out":p.stock<=p.min?"low":"";
+    const ed=e.k==="none"?"—":`${fmtDate(p.exp)}<div class="cat">${e.d<0?`venció hace ${-e.d} d`:`en ${e.d} d`}</div>`;
+    return`<tr>
+     <td><div class="name">${esc(p.name)}</div><div class="cat">${esc(p.cat)}</div></td>
+     <td><b>${p.stock}</b> ${esc(p.unit)} <span class="cat">/ mín. ${p.min}</span><div class="bar"><i class="${bc}" style="width:${pct}%"></i></div></td>
+     <td>${ed}</td>
+     <td><span class="pill ${s.c}">${s.l}</span></td>
+     <td><div class="actions"><button class="btn ghost sm" data-edit="${p.id}">Editar</button><button class="btn danger sm" data-del="${p.id}">✕</button></div></td>
+    </tr>`}).join(""):`<tr><td colspan="5" class="empty">No hay insumos que coincidan.</td></tr>`;
+
+  const M=S.movs.slice(0,MOVLIMIT);
+  $("#movs").innerHTML=M.length?M.map(m=>{
+    const p=P.find(x=>x.id===m.pid);
+    return`<div class="mov"><span class="t ${m.type}">${m.type==="in"?"+":"−"}${m.qty}</span><span>${p?esc(p.name):"(eliminado)"}</span><small>${ago(m.t)}</small></div>`}).join(""):`<div class="empty">Todavía no hay movimientos.</div>`;
+}
+
+function fillSelects(){
+  $("#fcat").innerHTML=`<option value="">Todas las categorías</option>`+CATS.map(c=>`<option>${c}</option>`).join("");
+  $("#fProd").cat.innerHTML=CATS.map(c=>`<option>${c}</option>`).join("");
+}
+function fillMovSelect(){
+  $("#fMov").pid.innerHTML=S.prods.map(p=>`<option value="${p.id}">${esc(p.name)} (${p.stock} ${esc(p.unit)})</option>`).join("");
+}
+
+let editId=null;
+function openProd(id){
+  const f=$("#fProd");f.reset();editId=id||null;
+  $("#tProd").textContent=id?"Editar insumo":"Nuevo insumo";
+  if(id){const p=S.prods.find(x=>x.id===id);["name","cat","unit","stock","min","exp"].forEach(k=>f[k].value=p[k]);}
+  $("#dProd").showModal();
+}
+function lock(txt){
+  $("#tLock").textContent=txt||"Versión completa";
+  $("#pLock").textContent=txt&&txt.includes("Productos")?`La demo permite hasta ${LIMIT} productos. La versión completa no tiene límite.`:"Esta función está disponible en la versión completa de DentalStock.";
+  $("#dLock").showModal();
+}
+function contact(){
+  const msg=encodeURIComponent("Hola! Probé la demo de DentalStock y me interesa la versión completa para mi consultorio.");
+  window.open("https://wa.me/5493777416857?text="+msg,"_blank","noopener");
+}
+
+$("#btnAdd").onclick=()=>{ if(S.prods.length>=LIMIT)return lock("Productos ilimitados"); openProd(); };
+$("#btnMov").onclick=()=>{ if(!S.prods.length)return; fillMovSelect(); $("#fMov").reset(); $("#dMov").showModal(); };
+$("#btnCta").onclick=contact; $("#btnLockCta").onclick=()=>{$("#dLock").close();contact();};
+document.addEventListener("click",e=>{
+  const t=e.target;
+  if(t.matches("[data-close]"))t.closest("dialog").close();
+  if(t.dataset.edit)openProd(+t.dataset.edit);
+  if(t.dataset.del){ if(confirm("¿Eliminar este insumo?")){S.prods=S.prods.filter(p=>p.id!==+t.dataset.del);save();render();} }
+  if(t.dataset.lock)lock(t.dataset.lock);
+});
+$("#fProd").addEventListener("submit",()=>{
+  const f=$("#fProd");
+  const d={name:f.name.value.trim(),cat:f.cat.value,unit:f.unit.value.trim(),stock:+f.stock.value,min:+f.min.value,exp:f.exp.value};
+  if(editId){Object.assign(S.prods.find(p=>p.id===editId),d);}
+  else{ if(S.prods.length>=LIMIT)return; S.prods.push({id:S.nid++,...d}); }
+  save();render();
+});
+$("#fMov").addEventListener("submit",()=>{
+  const f=$("#fMov"),p=S.prods.find(x=>x.id===+f.pid.value),q=+f.qty.value,type=f.type.value;
+  if(!p)return;
+  if(type==="out"&&q>p.stock){alert(`Solo hay ${p.stock} ${p.unit} en stock.`);return;}
+  p.stock+=type==="in"?q:-q;
+  S.movs.unshift({t:Date.now(),pid:p.id,type,qty:q});
+  S.movs=S.movs.slice(0,MOVLIMIT);
+  save();render();
+});
+["#q","#fcat","#fst"].forEach(s=>$(s).addEventListener("input",render));
+
+fillSelects();render();
+</script>
+<style>@media(max-width:760px){.two{grid-template-columns:1fr!important}}</style>
+</body>
+</html>
